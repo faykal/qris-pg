@@ -558,11 +558,9 @@ class QRISPaymentGateway {
         console.log("✅ Telegram notification sent successfully")
       } else {
         console.log("❌ Failed to send Telegram notification:", result.message)
-        this.showToast("❌ Failed to send Telegram notification:", result.message)
       }
     } catch (error) {
       console.error("❌ Error sending Telegram notification:", error)
-      this.showToast("❌ Error sending Telegram notification:", error)
       // Don't show error to user as this is background notification
     }
   }
