@@ -135,6 +135,10 @@ body {
   display: flex;
   gap: var(--space-3);
 }
+/* qris button */
+.downloadQrisBtn {
+  margin-top: 10px;
+}
 
 .nav-btn {
   display: flex;
