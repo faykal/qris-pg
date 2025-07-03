@@ -532,48 +532,40 @@ class QRISPaymentGateway {
   }
 
   async sendTelegramNotification() {
-  if (!this.currentTransaction) return;
+    if (!this.currentTransaction) return
 
-  try {
-    console.log("📱 Sending Telegram notification to owner...");
+    try {
+      console.log("📱 Sending Telegram notification to owner...")
 
-    const requiredFields = [
-      "idtransaksi",
-      "jumlah",
-    ];
+      const response = await fetch("/api/qris/telegram-notify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          transactionId: this.currentTransaction.idtransaksi,
+          amount: this.currentTransaction.jumlah,
+          originalAmount: this.currentTransaction.originalAmount,
+          wasAmountAdjusted: this.currentTransaction.wasAmountAdjusted,
+          amountAdjustment: this.currentTransaction.amountAdjustment,
+          paidAt: this.currentTransaction.paidAt,
+        }),
+      })
 
-    for (const field of requiredFields) {
-      if (!this.currentTransaction[field]) {
-        throw new Error(`Missing required field: ${field}`);
+      const result = await response.json()
+
+      if (result.status) {
+        console.log("✅ Telegram notification sent successfully")
+      } else {
+        console.log("❌ Failed to send Telegram notification:", result.message)
+        this.showToast("❌ Failed to send Telegram notification:", result.message)
       }
+    } catch (error) {
+      console.error("❌ Error sending Telegram notification:", error)
+      this.showToast("❌ Error sending Telegram notification:", error)
+      // Don't show error to user as this is background notification
     }
-
-    const response = await fetch("/api/qris/telegram-notify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        transactionId: this.currentTransaction.idtransaksi,
-        amount: this.currentTransaction.jumlah,
-        originalAmount: this.currentTransaction.originalAmount,
-        wasAmountAdjusted: this.currentTransaction.wasAmountAdjusted,
-        amountAdjustment: this.currentTransaction.amountAdjustment,
-        paidAt: this.currentTransaction.paidAt,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (result.status) {
-      console.log("✅ Telegram notification sent successfully");
-    } else {
-      console.log("❌ Failed to send Telegram notification:", result.message);
-    }
-  } catch (error) {
-    console.error("❌ Error sending Telegram notification:", error);
   }
-}
 
   showExpiredState() {
     const countdownSection = document.getElementById("countdownSection")
