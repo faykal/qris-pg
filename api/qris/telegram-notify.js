@@ -143,46 +143,4 @@ module.exports = (app) => {
       })
     }
   })
-
-  // Test endpoint to check Telegram configuration
-  app.get("/api/qris/telegram-test", async (req, res) => {
-    try {
-      const telegramToken = process.env.TELEGRAM_TOKEN
-      const ownerId = process.env.OWNER_ID
-
-      if (!telegramToken || !ownerId) {
-        return res.json({
-          status: false,
-          message: "Telegram not configured",
-          config: {
-            hasToken: !!telegramToken,
-            hasOwnerId: !!ownerId,
-          },
-        })
-      }
-
-      // Test sending a message
-      const bot = initializeBot()
-      await bot.telegram.sendMessage(ownerId, "◆ Test Notification\n\nTelegram bot berhasil terkonfigurasi!", {
-        parse_mode: "Markdown",
-      })
-
-      res.json({
-        status: true,
-        message: "Telegram test notification sent successfully",
-        config: {
-          hasToken: true,
-          hasOwnerId: true,
-          ownerId: ownerId,
-        },
-      })
-    } catch (error) {
-      console.log("✗ Telegram test failed:", error)
-      res.status(500).json({
-        status: false,
-        message: "Telegram test failed",
-        error: error.message,
-      })
-    }
-  })
 }
