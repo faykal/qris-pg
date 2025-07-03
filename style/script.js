@@ -762,6 +762,26 @@ function copyTransactionId() {
   }
 }
 
+const downloadQrisBtn = document.getElementById('downloadQrisBtn');
+
+// Tambahkan event listener untuk tombol download
+downloadQrisBtn.addEventListener('click', () => {
+  // Dapatkan URL gambar QRIS
+  const qrisImage = document.getElementById('qrisImage');
+  const url = qrisImage.src;
+
+  // Cek jika gambar QRIS sudah dimuat
+  if (url) {
+    // Buat elemen anchor untuk download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'qris-code.png';
+    a.click();
+  } else {
+    alert('QRIS code belum dimuat!');
+  }
+});
+
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   window.paymentGateway = new QRISPaymentGateway()
